@@ -15,7 +15,6 @@ export default function CampaignCard({ c, onClick }) {
       try {
         await navigator.share({
           title: c.title,
-          text: `Help fund: ${c.title}`,
           url: shareUrl
         });
         return;

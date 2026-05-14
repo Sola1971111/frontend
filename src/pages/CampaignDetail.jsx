@@ -18,7 +18,6 @@ export default function CampaignDetail({ campaign }) {
       try {
         await navigator.share({
           title: campaign.title,
-          text: `Help fund: ${campaign.title}`,
           url: shareUrl
         });
         return;
