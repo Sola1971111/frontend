@@ -11,11 +11,6 @@ export default function Nav({ go, showAdmin = true, backTo = null, isAdmin = fal
             {isAdmin && <span className="admin-badge">ADMIN</span>}
           </button>
         </div>
-        {showAdmin && (
-          <button className="btn btn-primary btn-sm" onClick={() => go({ name: 'admin-login' })}>
-            Admin
-          </button>
-        )}
       </div>
     </nav>
   );
