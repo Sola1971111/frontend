@@ -3,7 +3,13 @@ import * as api from '../api.js';
 
 const POLL_INTERVAL = 4000; // 4 seconds
 
-export default function ChatWidget({ hasDetailBar = false }) {
+import { useLocation } from 'react-router-dom';
+
+export default function ChatWidget({ hasDetailBar }) {
+  const location = useLocation();
+  // Move the chat button up when there's a sticky donate bar (campaign detail page)
+  const onCampaignDetail = location.pathname.startsWith('/campaign/');
+  hasDetailBar = hasDetailBar !== undefined ? hasDetailBar : onCampaignDetail;
   const [open, setOpen] = useState(false);
   const [threadId, setThreadId] = useState(api.getChatThreadId());
   const [messages, setMessages] = useState([]);

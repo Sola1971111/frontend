@@ -1,12 +1,16 @@
-export default function Nav({ go, showAdmin = true, backTo = null, isAdmin = false }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function Nav({ backTo = null, isAdmin = false }) {
+  const navigate = useNavigate();
+
   return (
     <nav className="navbar">
       <div className="navbar-inner">
         <div className="navbar-left">
           {backTo && (
-            <button className="nav-back" onClick={() => go(backTo)}>← Back</button>
+            <button className="nav-back" onClick={() => navigate(backTo)}>← Back</button>
           )}
-          <button className="logo" onClick={() => go({ name: 'home' })}>
+          <button className="logo" onClick={() => navigate('/')}>
             <span>Kindred</span>
             {isAdmin && <span className="admin-badge">ADMIN</span>}
           </button>

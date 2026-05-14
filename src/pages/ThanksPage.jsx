@@ -1,36 +1,38 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { fmt } from '../utils.js';
 import * as api from '../api.js';
 
-export default function ThanksPage({ donation, go, route }) {
-  // The `route` prop carries `paystackReference` if user just came back from Paystack
-  const paystackRef = route?.paystackReference;
+export default function ThanksPage({ donation: donationFromProp }) {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+
+  // Donation can come from route state (manual flow) or from props (legacy)
+  const donation = location.state?.donation || donationFromProp;
+  const paystackRef = searchParams.get('paystack_ref');
   const isPaystackReturn = !!paystackRef;
 
-  const [verified, setVerified] = useState(null); // null = loading, object = verified data
+  const [verified, setVerified] = useState(null);
   const [error, setError] = useState('');
 
-  // If we're returning from Paystack, verify the payment with our backend
   useEffect(() => {
     if (!isPaystackReturn) return;
 
     let cancelled = false;
     let attempts = 0;
-    const maxAttempts = 6; // try for ~12 seconds total
+    const maxAttempts = 6;
 
     const check = async () => {
       try {
         const result = await api.verifyPaystack(paystackRef);
         if (cancelled) return;
-
         if (result.status === 'approved') {
           setVerified(result);
         } else if (attempts < maxAttempts) {
-          // Webhook may not have arrived yet — try again in 2 seconds
           attempts++;
           setTimeout(check, 2000);
         } else {
-          // Still pending after many tries — show "processing" message
           setVerified(result);
         }
       } catch (err) {
@@ -55,7 +57,7 @@ export default function ThanksPage({ donation, go, route }) {
             We couldn't verify your payment right now. Don't worry — if your payment went through,
             it will be added to the campaign once we receive confirmation from Paystack.
           </p>
-          <button className="btn btn-primary btn-block btn-lg" onClick={() => go({ name: 'home' })}>
+          <button className="btn btn-primary btn-block btn-lg" onClick={() => navigate('/')}>
             Back to campaigns
           </button>
         </div>
@@ -63,7 +65,6 @@ export default function ThanksPage({ donation, go, route }) {
     }
 
     if (verified === null) {
-      // Loading — webhook may or may not have arrived
       return (
         <div className="thanks-wrap">
           <div className="spinner" style={{ margin: '0 auto 24px' }}></div>
@@ -84,7 +85,6 @@ export default function ThanksPage({ donation, go, route }) {
             Your donation of <b style={{ color: 'var(--success-dark)' }}>{fmt(verified.amount)}</b> has
             been confirmed and added to the campaign.
           </p>
-
           <div className="thanks-card">
             <div style={{ fontSize: 11, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
               Reference
@@ -93,15 +93,13 @@ export default function ThanksPage({ donation, go, route }) {
               {paystackRef}
             </div>
           </div>
-
-          <button className="btn btn-primary btn-block btn-lg" onClick={() => go({ name: 'home' })}>
+          <button className="btn btn-primary btn-block btn-lg" onClick={() => navigate('/')}>
             Back to campaigns
           </button>
         </div>
       );
     }
 
-    // Still pending (webhook didn't arrive in time)
     return (
       <div className="thanks-wrap">
         <div className="thanks-icon-wrap" style={{ background: 'var(--accent-light)' }}>
@@ -112,7 +110,6 @@ export default function ThanksPage({ donation, go, route }) {
           Your payment is being processed. It will appear on the campaign within a few minutes
           once Paystack confirms it.
         </p>
-
         <div className="thanks-card">
           <div style={{ fontSize: 11, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
             Reference
@@ -121,8 +118,7 @@ export default function ThanksPage({ donation, go, route }) {
             {paystackRef}
           </div>
         </div>
-
-        <button className="btn btn-primary btn-block btn-lg" onClick={() => go({ name: 'home' })}>
+        <button className="btn btn-primary btn-block btn-lg" onClick={() => navigate('/')}>
           Back to campaigns
         </button>
       </div>
@@ -130,7 +126,18 @@ export default function ThanksPage({ donation, go, route }) {
   }
 
   // === MANUAL FLOW ===
-  // Donor just uploaded receipt — your new message text
+  if (!donation) {
+    // No donation context — user landed here directly somehow
+    return (
+      <div className="thanks-wrap">
+        <h1 className="thanks-title">No donation in progress</h1>
+        <button className="btn btn-primary btn-block btn-lg" onClick={() => navigate('/')}>
+          Back to campaigns
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="thanks-wrap">
       <div className="thanks-icon-wrap">
@@ -138,11 +145,11 @@ export default function ThanksPage({ donation, go, route }) {
       </div>
       <h1 className="thanks-title">We got your donation</h1>
       <p className="thanks-sub">
-        Thanks for your <b style={{ color: 'var(--success-dark)' }}>{fmt(donation?.amount || 0)}</b> donation.
+        Thanks for your <b style={{ color: 'var(--success-dark)' }}>{fmt(donation.amount)}</b> donation.
         We're reviewing your transfer now — it'll appear on the campaign once we've confirmed it.
       </p>
 
-      {donation?.id && (
+      {donation.id && (
         <div className="thanks-card">
           <div style={{ fontSize: 11, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
             Reference ID
@@ -153,7 +160,7 @@ export default function ThanksPage({ donation, go, route }) {
         </div>
       )}
 
-      <button className="btn btn-primary btn-block btn-lg" onClick={() => go({ name: 'home' })}>
+      <button className="btn btn-primary btn-block btn-lg" onClick={() => navigate('/')}>
         Back to campaigns
       </button>
     </div>

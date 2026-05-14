@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Nav from '../components/Nav.jsx';
 import { fmt } from '../utils.js';
 import * as api from '../api.js';
 
-export default function DonateForm({ campaign, go }) {
+export default function DonateForm({ campaign, setPendingDonation }) {
+  const navigate = useNavigate();
   const [amount, setAmount] = useState(5000);
   const [customAmount, setCustomAmount] = useState('');
   const [name, setName] = useState('');
@@ -16,7 +18,6 @@ export default function DonateForm({ campaign, go }) {
 
   const presets = [1000, 5000, 10000, 25000];
 
-  // Load the site's current payment method
   useEffect(() => {
     api.getPaymentMethod()
       .then(r => setPaymentMethodLocal(r.method))
@@ -42,7 +43,6 @@ export default function DonateForm({ campaign, go }) {
     };
 
     if (paymentMethod === 'paystack') {
-      // Paystack flow — initialize transaction on backend, redirect to Paystack
       setSubmitting(true);
       try {
         const result = await api.initializePaystack({
@@ -53,31 +53,29 @@ export default function DonateForm({ campaign, go }) {
           message: message.trim(),
           anonymous: anon
         });
-        // Hand off to Paystack — they'll redirect back to our site after payment
         window.location.href = result.authorizationUrl;
       } catch (err) {
         setError(err.message || 'Could not start payment. Please try again.');
         setSubmitting(false);
       }
     } else {
-      // Manual flow — go to existing bank-details + receipt-upload page
-      go({ name: 'payment', donation: baseData });
+      setPendingDonation(baseData);
+      navigate('/payment');
     }
   };
 
   const buttonLabel = paymentMethod === 'paystack'
-    ? `Pay ${fmt(finalAmount || 0)} with Paystack →`
+    ? `Pay ${fmt(finalAmount || 0)} via Paystack →`
     : `Continue to payment · ${fmt(finalAmount || 0)} →`;
 
   return (
     <>
-      <Nav go={go} backTo={{ name: 'campaign', id: campaign.id }} showAdmin={false} />
+      <Nav backTo={`/campaign/${campaign.id}`} />
 
       <div className="form-page">
         <h1 className="form-title">Donate to this campaign</h1>
         <p className="form-sub">{campaign.title}</p>
 
-        {/* Payment method banner */}
         {paymentMethod === 'paystack' && (
           <div className="payment-mode-banner paystack-mode">
             💳 Secure card payment powered by Paystack

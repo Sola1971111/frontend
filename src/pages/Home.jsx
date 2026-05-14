@@ -1,19 +1,20 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Nav from '../components/Nav.jsx';
 import CampaignCard from '../components/CampaignCard.jsx';
 import { fmt } from '../utils.js';
 
-export default function Home({ campaigns, go }) {
+export default function Home({ campaigns }) {
   const [cat, setCat] = useState('All');
+  const navigate = useNavigate();
   const cats = ['All', 'Medical', 'Environment', 'Education', 'Creative', 'Community', 'Animals'];
   const filtered = cat === 'All' ? campaigns : campaigns.filter(c => c.category === cat);
   const totalRaised = campaigns.reduce((s, c) => s + c.raised, 0);
 
   return (
     <>
-      <Nav go={go} />
+      <Nav />
 
-      {/* HERO */}
       <section className="hero">
         <div className="container">
           <div className="hero-content">
@@ -31,12 +32,10 @@ export default function Home({ campaigns, go }) {
                 How it works
               </button>
             </div>
-
-            </div>
+          </div>
         </div>
       </section>
 
-      {/* STATS SECTION — full width, separated */}
       <section className="stats-section">
         <div className="container">
           <div className="stats-grid">
@@ -55,23 +54,18 @@ export default function Home({ campaigns, go }) {
           </div>
         </div>
       </section>
-      
-      {/* DISCOVER */}
+
       <section className="section" id="discover">
         <div className="container">
           <div className="section-head">
             <h2 className="section-title">Find a cause</h2>
             <p className="section-subtitle">Pick a category to filter campaigns</p>
           </div>
-
           <div className="pills">
             {cats.map(c => (
-              <button key={c} className={`pill ${cat === c ? 'active' : ''}`} onClick={() => setCat(c)}>
-                {c}
-              </button>
+              <button key={c} className={`pill ${cat === c ? 'active' : ''}`} onClick={() => setCat(c)}>{c}</button>
             ))}
           </div>
-
           {filtered.length === 0 ? (
             <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: 60 }}>
               No campaigns in this category yet.
@@ -79,14 +73,13 @@ export default function Home({ campaigns, go }) {
           ) : (
             <div className="grid">
               {filtered.map(c => (
-                <CampaignCard key={c.id} c={c} onClick={() => go({ name: 'campaign', id: c.id })} />
+                <CampaignCard key={c.id} c={c} onClick={() => navigate(`/campaign/${c.id}`)} />
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
       <section className="section section-tinted" id="how-it-works">
         <div className="container">
           <div className="section-head" style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 40px' }}>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CampaignEditor from '../components/CampaignEditor.jsx';
 import BankEditor from '../components/BankEditor.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
@@ -6,7 +7,8 @@ import ChatAdminPanel from '../components/ChatAdminPanel.jsx';
 import * as api from '../api.js';
 import { fmt } from '../utils.js';
 
-export default function AdminDashboard({ go, campaigns, bank, refreshCampaigns, refreshBank, setBank, setAdminToken, showToast }) {
+export default function AdminDashboard({ campaigns, bank, refreshCampaigns, refreshBank, setBank, setAdminToken, showToast }) {
+  const navigate = useNavigate();
   const [tab, setTab] = useState('donations');
   const [donations, setDonations] = useState([]);
   const [stats, setStats] = useState({ totalApproved: 0, pendingCount: 0, approvedCount: 0, campaignCount: 0, unreadChats: 0 });
@@ -40,7 +42,7 @@ export default function AdminDashboard({ go, campaigns, bank, refreshCampaigns, 
   const handleSignOut = () => {
     api.clearToken();
     setAdminToken(null);
-    go({ name: 'home' });
+    navigate('/');
   };
 
   // ===== Donation actions =====
@@ -166,8 +168,7 @@ export default function AdminDashboard({ go, campaigns, bank, refreshCampaigns, 
     <>
       <nav className="navbar">
         <div className="navbar-inner">
-          <button className="logo" onClick={() => go({ name: 'home' })}>
-            <span className="logo-mark">K</span>
+          <button className="logo" onClick={() => navigate('/')}>
             <span>Kindred</span>
             <span className="admin-badge">ADMIN</span>
           </button>

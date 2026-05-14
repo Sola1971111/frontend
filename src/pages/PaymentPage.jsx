@@ -1,21 +1,25 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Nav from '../components/Nav.jsx';
 import * as api from '../api.js';
 import { fmt } from '../utils.js';
 
-export default function PaymentPage({ donation, bank, go, showToast, onSuccess }) {
+export default function PaymentPage({ donation, bank, showToast, onSuccess }) {
+  const navigate = useNavigate();
   const [receiptFile, setReceiptFile] = useState(null);
   const [receiptPreview, setReceiptPreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef(null);
 
+  // If user lands here without a donation in progress, redirect them home
+  useEffect(() => {
+    if (!donation) {
+      navigate('/', { replace: true });
+    }
+  }, [donation, navigate]);
+
   if (!donation) {
-    return (
-      <div style={{ padding: 60, textAlign: 'center' }}>
-        <p>No donation in progress.</p>
-        <button className="btn btn-primary" onClick={() => go({ name: 'home' })}>Go home</button>
-      </div>
-    );
+    return null;
   }
 
   const handleFile = (file) => {
@@ -56,7 +60,7 @@ export default function PaymentPage({ donation, bank, go, showToast, onSuccess }
         receiptFile
       });
       if (onSuccess) await onSuccess();
-      go({ name: 'thanks', donation: { ...donation, id: result.id } });
+      navigate('/thanks', { state: { donation: { ...donation, id: result.id } } });
     } catch (err) {
       showToast(err.message || 'Submission failed', 'error');
     } finally {
@@ -66,7 +70,7 @@ export default function PaymentPage({ donation, bank, go, showToast, onSuccess }
 
   return (
     <>
-      <Nav go={go} backTo={{ name: 'donate', id: donation.campaignId }} showAdmin={false} />
+      <Nav backTo={`/donate/${donation.campaignId}`} />
 
       <div className="form-page">
         <h1 className="form-title">Complete your donation</h1>
@@ -74,7 +78,6 @@ export default function PaymentPage({ donation, bank, go, showToast, onSuccess }
           Transfer <b>{fmt(donation.amount)}</b> to the account below, then upload your receipt.
         </p>
 
-        {/* === BANK DETAILS === */}
         <div className="bank-card">
           <div className="bank-row">
             <div>
@@ -109,7 +112,7 @@ export default function PaymentPage({ donation, bank, go, showToast, onSuccess }
             <div className="bank-row">
               <div style={{ width: '100%' }}>
                 <div className="bank-label">Reference</div>
-                <div style={{ fontSize: 14, marginTop: 4, color: 'var(--text-primary)' }}>{bank.reference}</div>
+                <div style={{ fontSize: 13, marginTop: 4 }}>{bank.reference}</div>
               </div>
             </div>
           )}
@@ -135,7 +138,6 @@ export default function PaymentPage({ donation, bank, go, showToast, onSuccess }
           </p>
         )}
 
-        {/* === RECEIPT UPLOAD === */}
         <div className="field">
           <label>Upload receipt *</label>
           <div className={`upload-box ${receiptFile ? 'has-file' : ''}`}

@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as api from '../api.js';
 
-export default function AdminLogin({ go, setAdminToken, showToast }) {
+export default function AdminLogin({ setAdminToken, showToast }) {
+  const navigate = useNavigate();
   const [u, setU] = useState('');
   const [p, setP] = useState('');
   const [busy, setBusy] = useState(false);
@@ -14,7 +16,7 @@ export default function AdminLogin({ go, setAdminToken, showToast }) {
       const result = await api.login(u, p);
       api.setToken(result.token);
       setAdminToken(result.token);
-      go({ name: 'admin' });
+      navigate('/admin');
     } catch (err) {
       showToast(err.message || 'Login failed', 'error');
     } finally {
@@ -25,8 +27,8 @@ export default function AdminLogin({ go, setAdminToken, showToast }) {
   return (
     <div className="login-wrap">
       <div className="login-card">
-        <button className="logo" onClick={() => go({ name: 'home' })} style={{ marginBottom: 24 }}>
-          <span className="logo-mark">K</span> Kindred
+        <button className="logo" onClick={() => navigate('/')} style={{ marginBottom: 24 }}>
+          Kindred
         </button>
         <h2 className="form-title">Admin login</h2>
         <p className="form-sub">Authorized personnel only.</p>
@@ -45,7 +47,7 @@ export default function AdminLogin({ go, setAdminToken, showToast }) {
           </button>
         </form>
 
-        <button className="btn btn-light btn-block" onClick={() => go({ name: 'home' })} style={{ marginTop: 12 }}>
+        <button className="btn btn-light btn-block" onClick={() => navigate('/')} style={{ marginTop: 12 }}>
           Back to site
         </button>
       </div>
