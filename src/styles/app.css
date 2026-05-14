@@ -133,13 +133,12 @@ button { cursor: pointer; border: none; background: none; }
 }
 
 .loader-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 22px;
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+  font-style: italic;
+  color: var(--primary);
+  letter-spacing: -0.01em;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -214,15 +213,17 @@ button { cursor: pointer; border: none; background: none; }
 }
 
 .logo {
-  font-size: 22px;
-  font-weight: 800;
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
   color: var(--primary);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
+  font-style: italic;
 }
 
 @media (min-width: 768px) {
   .logo {
-    font-size: 26px;
+    font-size: 34px;
   }
 }
 
@@ -1399,15 +1400,14 @@ footer {
 }
 
 .footer-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 22px;
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: 26px;
   font-weight: 700;
+  font-style: italic;
+  color: var(--primary);
   margin-bottom: 12px;
+  letter-spacing: -0.01em;
 }
-
-.footer-logo .logo-mark { background: var(--primary); }
 
 .footer-text {
   font-size: 13px;

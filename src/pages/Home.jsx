@@ -32,24 +32,30 @@ export default function Home({ campaigns, go }) {
               </button>
             </div>
 
-            <div className="hero-stats">
-              <div>
-                <div className="hero-stat-num">{fmt(totalRaised)}</div>
-                <div className="hero-stat-label">Total raised</div>
-              </div>
-              <div>
-                <div className="hero-stat-num">{campaigns.length}</div>
-                <div className="hero-stat-label">Campaigns</div>
-              </div>
-              <div>
-                <div className="hero-stat-num">96%</div>
-                <div className="hero-stat-label">Success rate</div>
-              </div>
+            </div>
+        </div>
+      </section>
+
+      {/* STATS SECTION — full width, separated */}
+      <section className="stats-section">
+        <div className="container">
+          <div className="stats-grid">
+            <div className="stats-card">
+              <div className="stats-num">{fmt(totalRaised)}</div>
+              <div className="stats-label">Total raised</div>
+            </div>
+            <div className="stats-card">
+              <div className="stats-num">{campaigns.length}</div>
+              <div className="stats-label">Campaigns</div>
+            </div>
+            <div className="stats-card">
+              <div className="stats-num">96%</div>
+              <div className="stats-label">Success rate</div>
             </div>
           </div>
         </div>
       </section>
-
+      
       {/* DISCOVER */}
       <section className="section" id="discover">
         <div className="container">
@@ -109,9 +115,7 @@ export default function Home({ campaigns, go }) {
       </section>
 
       <footer>
-        <div className="footer-logo">
-          <span className="logo-mark">K</span> Kindred
-        </div>
+        <div className="footer-logo">Kindred</div>
         <div className="footer-text">© 2026 Kindred. Built with care for generous people.</div>
       </footer>
     </>

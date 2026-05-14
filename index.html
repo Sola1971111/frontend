@@ -8,7 +8,7 @@
     <meta name="description" content="Support meaningful causes through secure donations. Help fund medical care, education, environment, and creative projects." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bodoni+Moda:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet" />
     <style>
       /* Inline initial-load spinner — shown immediately, before React loads */
       html, body { margin: 0; padding: 0; background: #FFFFFF; }
@@ -36,33 +36,21 @@
         animation: spin 0.8s linear infinite;
       }
       #initial-loader .brand {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 22px;
+        font-family: 'Bodoni Moda', Georgia, serif;
+        font-size: 28px;
         font-weight: 700;
-        color: #111827;
-        letter-spacing: -0.02em;
+        font-style: italic;
+        color: #2563EB;
+        letter-spacing: -0.01em;
       }
-      #initial-loader .mark {
-        width: 28px;
-        height: 28px;
-        border-radius: 8px;
-        background: #2563EB;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 16px;
-      }
+
       @keyframes spin { to { transform: rotate(360deg); } }
     </style>
   </head>
   <body>
     <div id="initial-loader">
       <div class="spinner"></div>
-      <div class="brand"><span class="mark">K</span> Kindred</div>
+      <div class="brand">Kindred</div>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>

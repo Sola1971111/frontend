@@ -63,7 +63,6 @@ export default function App() {
       <div className="loader-screen">
         <div className="spinner"></div>
         <div className="loader-brand">
-          <span className="logo-mark">K</span>
           Kindred
         </div>
       </div>
